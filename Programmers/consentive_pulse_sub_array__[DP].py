@@ -21,7 +21,8 @@ def solution(arr):
     sum = 0
     for i in range(len(arr)):
         dp[i] = sum = arr[i] * -1
-        dynamic_programming(True, i)
+        
+        (True, i)
         answer = sum if sum > answer else answer
 
     for i in range(len(arr)):
