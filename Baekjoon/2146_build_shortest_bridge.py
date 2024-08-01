@@ -1,54 +1,70 @@
 import sys
+import copy
 
 def solution():
     N = int(sys.stdin.readline())
-    
     wm = []
+    # visited = []
     for _ in range(N):
         wm.append(list(map(int, sys.stdin.readline().split())))
-    
-    ports = []
-    dir_type = []
-    dir = [(0, -1), (1, 0), (0, 1), (-1, 0)]
+        # visited.append([False for __ in range(N)])
+
+    dx = (0, 1, 0, -1)
+    dy = (-1, 0, 1, 0)
+    ports = [] # 각 섬의 끝에 위치한 타일들의 좌표
+
+    # 각 섬마다 id 부여하여 구분짓기 + 다리 시작점 찾기(bfs)
+    isl_id = -1
     for r in range(N):
         for c in range(N):
-            # 현재 칸의 <상 우 하 좌> 탐색하여 0 인 곳이 1개 이상인 지점 저장
-            for i, d in enumerate(dir):
-                if wm[r+d[0]][c+d[1]] == 0:
-                    ports.append((r, c))
-                    dir_type.append(i)
-    
-    # port 들끼리 연결
-    curr = []
-    brdg = 0
-    for j, port in enumerate(ports):
-        # <상우하좌> 반복 돌면서 0인 곳으로 쭉쭉 -> BFS
-        [port[0]+dir[dir_type[j]][0], port[1]+dir[dir_type[j]][1]]
-        def bfs(x, y, dpth):
-            nonlocal ports, dir_type, dir, wm, brdg
-            
-            q = [(x, y)]
+            if wm[r][c] <= 0:
+                continue
+            q = [(r, c)]
             while q:
                 curr = q.pop(0)
-                
-                # 현재 위치가 목표지점이면 다리 길이 반환
-                if curr in ports:
-                    return dpth
-                
-                for d in dir:
-                    next = (curr[0]+d[0], curr[1]+d[1])
-                    
-                    # 다음으로 이동할 수 있는 길 추가
-                    if wm[next[0]][next[1]] == 0:
-                        q.append(next)
-                        wm[next[0]][next[1]] = 2
-                        
-                        bfs()
-            # => 여기를 재귀로 만들어서 bfs 탐색하다가 port 만나면 재귀 끝내도록 + 깊이 기록
+                for x, y in zip(dx, dy):
+                    nx_r = curr[0]+y
+                    nx_c = curr[1]+x
+                    if 0 <= nx_r < N and 0 <= nx_c < N:
+                        if wm[nx_r][nx_c] > 0 and (nx_r, nx_c) not in q:
+                            q.append((nx_r, nx_c)) # q 에는 0 보다 큰 타일의 좌표만 저장됨. 
+                        elif wm[nx_r][nx_c] == 0 and (curr[0], curr[1]) not in ports: # 옆 타일이 하나라도 바다(0) 이면 port 타일임.
+                            ports.append((curr[0], curr[1]))
+                            
+                wm[curr[0]][curr[1]] = isl_id
+
+            isl_id -= 1
+
+    # 가장 짧은 다리 찾기 (bfs)
+    shortest_br = sys.maxsize
+    for port in ports:
+        tmp_m = [copy.deepcopy(e) for e in wm]
         
-################################################# 여기까지 직접 작성함.
+        find = False
+        br_q = [port]
+        while br_q and not find:
+            c_port = br_q.pop(0)
+            for x, y in zip(dx, dy):
+                nx_r = c_port[0]+y
+                nx_c = c_port[1]+x
+                
+                # 지도 안에 있는 좌표만 검사
+                if 0 <= nx_r < N and 0 <= nx_c < N:
+                    # 바다이면 다리 짓기
+                    if tmp_m[nx_r][nx_c] == 0:
+                        tmp_m[nx_r][nx_c] = 1 if c_port in ports else tmp_m[c_port[0]][c_port[1]] + 1
+                        if (nx_r, nx_c) not in br_q:
+                            br_q.append((nx_r, nx_c))
 
+                    # 다른 섬에 도달 = 해당 port 에서 지을 수 있는 가장 짧은 다리
+                    elif tmp_m[nx_r][nx_c] < 0 and tmp_m[nx_r][nx_c] != tmp_m[port[0]][port[1]]:
+                        shortest_br = min(tmp_m[c_port[0]][c_port[1]], shortest_br)
+                        find = True
+                        break
 
+    if shortest_br < sys.maxsize:
+        sys.stdout.write(f"{shortest_br}")
+    else:
+        sys.stdout.write(f"INF")
 
-
-                    
+solution()
