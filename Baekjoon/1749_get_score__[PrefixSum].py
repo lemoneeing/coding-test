@@ -15,12 +15,12 @@ def solution():
 
         for c in range(M):
             if c > 0:
-                rPfxSum[r].append(matrix[r][c] + rPfxSum[r][c-1])
+                rPfxSum[r].append(max(matrix[r][c], matrix[r][c] + rPfxSum[r][c-1]))
 
             if r > 0:
-                cPfxSum[r].append(matrix[r][c] + cPfxSum[r - 1][c])
+                cPfxSum[r].append(max(matrix[r][c], matrix[r][c] + cPfxSum[r - 1][c]))
 
-    maxSubPfxSum = 0
+    maxSubPfxSum = matrix[0][0]
     subPfxSum[0] = rPfxSum[0]
     for i in range(N):
         for j in range(M):
@@ -29,16 +29,18 @@ def solution():
                 subPfxSum[i][j] = cPfxSum[i][j]
                 continue
 
-            subPfxSum[i][j] = matrix[i][j]
+            elif i > 0:
+                subPfxSum[i][j] = matrix[i][j]
 
-            for s in range(i):
-                subPfxSum[i][j] += rPfxSum[s][j]
-            for e in range(j):
-                subPfxSum[i][j] += cPfxSum[i][e]
+                for s in range(i):
+                    subPfxSum[i][j] += rPfxSum[s][j]
+                for e in range(j):
+                    subPfxSum[i][j] += cPfxSum[i][e]
 
-            subPfxSum[i][j] -= subPfxSum[i-1][j-1]
+                if i > 0 and j > 0:
+                    subPfxSum[i][j] -= subPfxSum[i-1][j-1]
 
-            maxSubPfxSum = max(maxSubPfxSum, subPfxSum[i][j])
+            maxSubPfxSum = max(maxSubPfxSum, subPfxSum[i][j], rPfxSum[i][j], cPfxSum[i][j], matrix[i][j])
 
     sys.stdout.write(f"{maxSubPfxSum}")
 
