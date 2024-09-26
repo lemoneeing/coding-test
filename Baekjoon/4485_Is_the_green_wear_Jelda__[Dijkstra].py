@@ -1,4 +1,5 @@
 import sys
+import heapq
 
 def solution():
     tc = 0
@@ -28,12 +29,12 @@ def solution():
         #             path[r][c] = min(path[r][c - 1], path[r - 1][c]) + cave[r][c]
         # ans.append(str(path[N - 1][N - 1]))
 
-        # 참고 풀이: 다익스트라
-        q = [(0, 0)]
+        # 참고 풀이: 다익스트라 + heap
         path[0][0] = cave[0][0]
+        q = [(path[0][0], 0, 0)]
         while q:
-            cX, cY = q.pop(0)
-            cCost = path[cX][cY]
+            # cCost, cX, cY = q.pop(0)
+            cCost, cX, cY = heapq.heappop(q)
 
             if cX == N-1 and cY == N-1:
                 if len(ans) == tc:
@@ -47,10 +48,8 @@ def solution():
                 if 0 <= (nX := cX + dX) < N and 0 <= (nY := cY + dY) < N:
                     if path[nX][nY] > (cCost + cave[nX][nY]):
                         path[nX][nY] = cCost + cave[nX][nY]
-                        if not q or (q and q[-1] != (nX, nY)):
-                            q.append((nX, nY))
+                        heapq.heappush(q, (path[nX][nY], nX, nY))
 
-    
     for i, a in enumerate(ans):
         sys.stdout.write(f"Problem {i+1}: {a}\n")
         
