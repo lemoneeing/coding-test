@@ -9,12 +9,10 @@ def solution():
         # 연산자 '+'
         if bt(res+operand, operand+1, True, limit) == 0:
             exp.append('+') 
-        exp.pop()
         
         # 연산자 '-'
         if bt(res-operand, operand+1, False, limit) == 0:
             exp.append('-')
-        exp.pop()
         
         
     ans = 0
@@ -23,7 +21,11 @@ def solution():
     for _ in range(C):
         calc = 0
         ans = []
-        bt(0, 1, int(sys.stdin.readline().strip()), ans)
-            
+        N = int(sys.stdin.readline().strip())
+        bt(0, 1, N, ans)
+        
+        sys.stdout.write(f"1")
+        for i in range(2, N+1):
+            sys.stdout.write(f"{ans.pop()}{i}")
         
 solution()
