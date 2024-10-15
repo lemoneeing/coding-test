@@ -5,30 +5,30 @@ def solution():
     grp = []
     
     check = []
+    visited = []
     adj = []
     for s in range(N):
         grp.append(sys.stdin.readline().strip().split())
         adj.append([])
         check.append([])
+        visited.append(False)
         
         for e, v in enumerate(grp[s]):
             if v == '1':
                 adj[s].append(e)
-    
-    
-    for start in range(N):
-        stack = [n for n in adj[start]]
+
+    stack = []
+    for s in range(N):
+        visited[s] = True
+        stack.append(adj[s])
         while stack:
-            next = stack.pop()
-            
-            if next not in check[start]:
-                grp[start][next] = '1'
-            
-            check[start].extend(adj[next])
-            
-            for n in adj[next]:
-                if (q and q[-1] != n) or n not in check[start]:
-                    q.append(n)
+            nxt_path = stack.pop()
+            for nxt in nxt_path:
+                grp[s][nxt] = '1'
+                if not visited[nxt]:
+                    visited[nxt] = True
+                    stack.append(adj[nxt])
+        visited = [False] * N
             
     for _ in range(N):
         sys.stdout.write(f"{' '.join(grp[_])}\n")
