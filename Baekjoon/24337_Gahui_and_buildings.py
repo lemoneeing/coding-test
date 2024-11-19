@@ -3,71 +3,49 @@ input = sys.stdin.readline
 
 def solution():
     N, a, b = map(int, input().strip().split())
-
-    if a == N == b:
+    lgR = False
+    if a > b:
+        longer = a
+        shorter = b
+        lgR = False
+    else:
+        longer = b
+        shorter = a
+        lgR = True
+    
+    if N - longer < shorter - 1:
         sys.stdout.write('-1')
+        return
 
     ans = []
-    start = 0
-    while len(ans) < N:
-        forA = []
-        curr = start
-        # curr < a 일 동안 ans 에 1 부터 오름차순 추가
-        for i in range(a):
-            curr += 1
-            forA.append(curr)
-            if N - len(forA) < b - 1:
-                sys.stdout.write('-1')
-                return
+    longerPart = []
+    shorterPart = []
+    if lgR:
+        longerPart.extend([l for l in range(longer, 0, -1)])
+        ###### longerPart 의 0 번째 값보다 작으면서 shorter 만큼의 숫자 배치
+        for s in range(1, longerPart[0]):
+            if len(shorterPart) == shorter-1:
+                ans = [1] * (N - len(longerPart) - len(shorterPart))
+                ans = ans + longerPart[0] + ([1] * (N - longer + 1)) + longerPart[1:]
+                break
             
-        # # 막빌 높이가 b 보다 작으면 b부터 거꾸로 채움.
-        # if curr > b:
-        #     if N - len(forA) > b:
-        #         ans = forA + [1]*(N-a-b) + [i for i in range(1, b+1)][::-1]
-        #     else:
-        #         print(-1)
-        #         return
+        #     shorterPart.append(s)
             
-        # # 막빌 높이가 b와 같으면 막빌 -1 부터 거꾸로 b-1까지 채움. b번째부터 1 채움
-        # elif curr == b:
-        #     ans = forA + [e for e in range(curr-1, 1, -1)]
-        #     if len(ans) < N:
-        #         ans += [ans[-1]-1] * (N - len(ans))
-
-        # # 막빌 높이가 b보다 작으면 b - 막빌높이 만큼 더함.
-        # elif curr < b:
-        #     forA[-1] += b-curr
-        #     ans = forA + [i for i in range(1, b)][::-1]
-            
-        # if len(ans) == N:
-        #     sys.stdout.write(' '.join(list(map(str, ans))))
-        #     return
+        # shorterPart.extend([s for s in range(1, shorter)])
         
-        if N - len(forA) == b - 1:
-            if curr <= b:
-                forA[-1] = b
-                ans = forA + [i for i in range(curr, 0, -1)]
-            else:
-                ans = forA + [i for i in range(b, 0, -1)]
-            
-        elif N - len(forA) == b:
-            if curr <= b:
-                forA[-1] = b
-                ans = forA + [i for i in range(b, 0, -1)]
-            else:
-                ans = forA + [i for i in range(curr, curr-b, -1)]
+        # ans = [s for s in range(1, shorter+1)] + longerPart[:1] 
+        # ans = ans + ([1] * (N - longer - shorter - len(ans))) + longerPart[1:] + shorterPart[:]
         
-        # 훨씬 많이 남은 경우
-        else:
-            if curr <= b:
-                forA[-1] = b
-                ans = forA + [1]*(N-a-b+1) + [i for i in range(b-1, 0, -1)]
-            else:
-                ans = forA + [1]*(N-a-b+1) + [i for i in range(curr-1, 1, -1)]
+        print(longerPart)
+        print(shorterPart)
+        print(' '.join(list(map(str, ans))))
+    else:
+        longerPart.extend([l for l in range(1, longer+1)])
+        shorterPart.extend([s for s in range(shorter-1, 0, -1)])
+        ans = longerPart + shorterPart
         
-        if len(ans) == N:
-            sys.stdout.write(' '.join(list(map(str, ans))))
-            return
-        start += 1
+        print(longerPart)
+        print(shorterPart)
+        print(' '.join(list(map(str, [1] * (N - len(ans)) + ans))))
 
 solution()
