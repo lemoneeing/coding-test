@@ -20,32 +20,38 @@ def solution():
     ans = []
     longerPart = []
     shorterPart = []
+    
+    # 가희친구가 볼 수있는 빌딩이 더 많을 때
     if lgR:
         longerPart.extend([l for l in range(longer, 0, -1)])
-        ###### longerPart 의 0 번째 값보다 작으면서 shorter 만큼의 숫자 배치
-        for s in range(1, longerPart[0]):
-            if len(shorterPart) == shorter-1:
-                ans = [1] * (N - len(longerPart) - len(shorterPart))
-                ans = ans + longerPart[0] + ([1] * (N - longer + 1)) + longerPart[1:]
-                break
-            
-        #     shorterPart.append(s)
-            
-        # shorterPart.extend([s for s in range(1, shorter)])
+        shorterPart.extend([s for s in range(1, shorter)])
         
-        # ans = [s for s in range(1, shorter+1)] + longerPart[:1] 
-        # ans = ans + ([1] * (N - longer - shorter - len(ans))) + longerPart[1:] + shorterPart[:]
+        if longer + shorter > N:
+            ans = shorterPart[:shorter] + longerPart
         
-        print(longerPart)
-        print(shorterPart)
-        print(' '.join(list(map(str, ans))))
+        elif longer + shorter == N:
+            shorterPart[-1] = longerPart[0]
+            ans = shorterPart + longerPart
+        
+        else:
+            if shorter == 1:
+                ans = [longerPart[0]] + ([1] * (N - longer - shorter + 1)) + longerPart[1:]
+            else:
+                ans = [shorterPart[0]] + ([1] * (N - longer - shorter + 1)) + shorterPart[1:] + longerPart
     else:
         longerPart.extend([l for l in range(1, longer+1)])
-        shorterPart.extend([s for s in range(shorter-1, 0, -1)])
-        ans = longerPart + shorterPart
+        shorterPart.extend([s for s in range(shorter, 0, -1)])
         
-        print(longerPart)
-        print(shorterPart)
-        print(' '.join(list(map(str, [1] * (N - len(ans)) + ans))))
+        if longer + shorter > N:
+            ans = longerPart + shorterPart[1:]
+        
+        elif longer + shorter == N:
+            shorterPart[0] = longerPart[-1]
+            ans = longerPart + shorterPart
+        
+        else:
+            ans = ([1] * (N - longer - shorter + 1)) + longerPart + shorterPart[1:]
+            
+    sys.stdout.write(' '.join(list(map(str, ans))))
 
 solution()
