@@ -23,6 +23,27 @@ from typing import List
 #
 #         return ans
 
-
+# 새로 다시 품
 class Solution:
     def countSquares(self, matrix: List[List[int]]) -> int:
+        ans = 0
+        w = len(matrix[0])
+        h = len(matrix)
+
+        for r in range(h):
+            for c in range(w):
+                if matrix[r][c] == 1:
+                    if r > 0 and c > 0 and matrix[r-1][c] and matrix[r][c-1] and matrix[r-1][c-1]:
+                        matrix[r][c] = min(matrix[r-1][c], matrix[r][c-1], matrix[r-1][c-1]) + 1
+                        ans += matrix[r][c]
+                    else:
+                        ans += 1
+
+        return ans
+
+print(Solution().countSquares([
+  [0, 1, 1, 0],
+  [1, 1, 1, 0],
+  [1, 1, 1, 0],
+  [1, 1, 1, 1]
+]))
