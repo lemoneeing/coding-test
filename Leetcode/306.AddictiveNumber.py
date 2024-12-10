@@ -1,38 +1,29 @@
 class Solution:
     def isAdditiveNumber(self, num: str) -> bool:
-        cfL = 1
-        while cfL <= len(num)//2:
-            fI = 0
-            fL = cfL
-            start = True
-            sI = fI+fL
-            sL = len(num[fI+fL:]) // 2
-            while sL > 0:
-                if (fL > 1 and num[fI:fI+fL].startswith('0')) or (sL > 1 and num[sI:sI+sL].startswith('0')):
-                    return False
-                subSum = str(int(num[fI:fI+fL]) + int(num[sI:sI+sL]))
-                if num[sI+sL:] == subSum:
+        length_of_num = len(num)
+        start = 0
+        fe = 1
+        while fe < length_of_num//2:
+            be = fe + 1
+            while be < length_of_num:
+                curr_sum = str(int(num[start:fe]) + int(num[fe:be]))
+                if num[be:] == curr_sum:
                     return True
                 else:
-                    if num[sI+sL:].startswith(subSum):
-                        start = False
-                        fI = sI
-                        fL = sL
-                        sI = sI+sL
-                        sL = len(subSum)
+                    if num[be:].startswith(curr_sum):
+                        start = fe
+                        fe = be
+                        be += len(curr_sum)
                     else:
-                        if start:
-                            sL -= 1
-                        else:
-                            break
+                        be += 1
+            fe += 1
 
-            cfL+=1
-            
         return False
 
-print(Solution().isAdditiveNumber('231336497')) #True
-print(Solution().isAdditiveNumber('1752227381')) #False
-print(Solution().isAdditiveNumber('17522274976125')) #True
-print(Solution().isAdditiveNumber('011112')) #False
-print(Solution().isAdditiveNumber('000')) # True
-print(Solution().isAdditiveNumber('12122436')) # True
+# print(Solution().isAdditiveNumber('231336497')) #True
+# print(Solution().isAdditiveNumber('1752227381')) #False
+# print(Solution().isAdditiveNumber('17522274976125')) #True
+print(Solution().isAdditiveNumber('011112')) # False
+# print(Solution().isAdditiveNumber('000')) # True
+# print(Solution().isAdditiveNumber('12122436')) # True
+# print(Solution().isAdditiveNumber('12012122436')) # True
