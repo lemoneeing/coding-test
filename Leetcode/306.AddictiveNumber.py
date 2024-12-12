@@ -3,18 +3,18 @@ class Solution:
         for fi in range(1, len(num)):
             for si in range(fi+1, len(num)):
                 first = num[:fi]
-                second = num[fi:si]
-                last = num[si:]
                 if len(first) > 1 and first[0] == '0':
                     return False
 
+                second = num[fi:si]
                 if len(second) > 1 and second[0] == '0':
                     break
 
+                last = num[si:]
                 if len(last) > 1 and last[0] == '0' and int(last) != 0:
                     continue
 
-                # 지금까지의 substring 은 additive seq 가 될 수 없으므로 first를 바꿔야 .
+                # 지금까지의 substring 은 additive seq 가 될 수 없으므로 first를 바꿔야 함.
                 if max(len(first), len(second)) > len(last):
                     break
 
@@ -29,10 +29,6 @@ class Solution:
                     currSum = int(first) + int(second)
 
         return False
-
-
-
-
 
 # print(Solution().isAdditiveNumber('112358')) #True
 # print(Solution().isAdditiveNumber('199100199')) #True
