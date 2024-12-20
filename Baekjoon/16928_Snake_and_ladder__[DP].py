@@ -7,39 +7,30 @@ input = sys.stdin.readline
 def solution():
     L, S = map(int, input().split())
     path = []
-    snakes = []
-    ladders = []
-    for _ in range(L):
-        num_pair = tuple(map(int, input().split()))
-        heappush(path, num_pair)
-        heappush(ladders, num_pair)
+    snakes = {}
+    ladders = {}
 
-    for _ in range(S):
+    for l in range(L):
         num_pair = tuple(map(int, input().split()))
-        heappush(path, num_pair)
-        heappush(snakes, num_pair)
+        path.append(num_pair)
+        ladders[num_pair[0]] = num_pair[1]
 
-    # 기본
+    for s in range(S):
+        num_pair = tuple(map(int, input().split()))
+        path.append(num_pair)
+        snakes[num_pair[0]] = num_pair[1]
+
+    # 뱀이나 사다리 없을 경우 이동 횟수
     board = [0] * 101
-    for i in range(101):
-        if i < 6:
-            board[i] = i % 6
-        else:
-            board[i] = math.ceil(i / 6)
+    w = 1
+    for i in range(1, 101, 6):
+        board[i:i+6] = [w] * 6
+        w += 1
 
-    # 사다리
-    for ladder in ladders:
-        board[ladder[1]] = min(board[ladder[1]], board[ladder[0]])
+    q = [i for i in range(1, 7)]
+    while q:
+        curr = q.pop(0)
 
-    # 사디리로 도달 횟수가 갱신된 칸을 기준으로 다음 칸의 도달 횟수를 +1 씩하여 갱신 -> 100번
-
-    # 뱀
-
-    # 뱀으로 갱신된 칸 기준으로 다음 칸 도달 횟수 갱신 -> 100
-
-    dp = []
-    print(path)
-    print(ladders)
-    print(snakes)
+    print(board[100])
 
 solution()
