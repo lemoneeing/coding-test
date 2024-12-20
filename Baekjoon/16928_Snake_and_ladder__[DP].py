@@ -6,30 +6,39 @@ input = sys.stdin.readline
 
 def solution():
     L, S = map(int, input().split())
-    path = []
     snakes = {}
     ladders = {}
 
     for l in range(L):
         num_pair = tuple(map(int, input().split()))
-        path.append(num_pair)
         ladders[num_pair[0]] = num_pair[1]
 
     for s in range(S):
         num_pair = tuple(map(int, input().split()))
-        path.append(num_pair)
         snakes[num_pair[0]] = num_pair[1]
 
     # 뱀이나 사다리 없을 경우 이동 횟수
-    board = [0] * 101
-    w = 1
-    for i in range(1, 101, 6):
-        board[i:i+6] = [w] * 6
-        w += 1
-
-    q = [i for i in range(1, 7)]
+    q = [1]
+    board = [1] * 101
+    visited = [False] * 101
     while q:
         curr = q.pop(0)
+        if curr == 100:
+            break
+
+        for i in range(1, 7):
+            next = curr+i
+            if next <= 100 and not visited[next]:
+                if next in ladders.keys():
+                    next = ladders[next]
+
+                if next in snakes.keys():
+                    next = snakes[next]
+
+                if not visited[next]:
+                    q.append(next)
+                    visited[next] = True
+                    board[next] = board[curr] + 1
 
     print(board[100])
 
