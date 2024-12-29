@@ -11,23 +11,25 @@ def solution():
             if p == 1:
                 path[r].append(c+1)
 
-    plan = list(map(int, input().strip().split()))
+    plan = []
+    visited = {}
+    for tg in map(int, input().strip().split()):
+        plan.append(tg)
+        visited[tg] = False
 
     ## DFS
     stack = [plan[0]]
-    visited = [False] * (C+1)
-    visited[0] = True
-
     while stack:
         curr = stack.pop()
-        if not visited[curr]:
-            visited[curr] = True
+        if not visited.get(curr, False):
+            if curr in visited:
+                visited[curr] = True
             stack.extend(path[curr])
 
-        if all(visited):
-            print("YES")
+        if all(visited.values()):
+            sys.stdout.write("YES")
             return
 
-    print("NO")
+    sys.stdout.write("NO")
 
 solution()
