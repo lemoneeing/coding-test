@@ -5,22 +5,23 @@ def solution():
     n, W, L = map(int, input().split())
     trucks = list(map(int, input().split()))
     brg = []
-    w_on_brg = 0
     cost = 0
-    while trucks:
-        nxt_tr = trucks[0]
-        if w_on_brg + nxt_tr <= L:
-            brg.append(trucks.pop(0))
-            cost += 1
-        else:
-            cost += (W - len(brg))
-            brg.pop(0)
+    while trucks or sum(brg) > 0:
+        cost += 1
 
+        # 다리가 트럭으로 꽉 찼으면 맨 앞 트럭 이동 = 다리 탈출
         if len(brg) == W:
             brg.pop(0)
+        
+        if trucks:
+            nxt_tr = trucks[0] # 남은 트럭 중 가장 앞 순서
 
-        if not trucks and brg: # 다리에 올라 가지 못한 트럭이 없음.
-            cost += W
+            if sum(brg) + nxt_tr <= L: # 하중 여유 있으면 다리 위로 트럭 올리기
+                brg.append(trucks.pop(0))
+                continue
+        # 남은 트럭이 없거나 다리 하중 여유 없으면 다리 위 트럭들만 한 칸 씩 이동
+        brg.append(0)
+        
 
     sys.stdout.write(f"{cost}")
 
