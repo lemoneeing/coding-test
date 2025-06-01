@@ -164,13 +164,13 @@ def solution():
         sorted_uv.append(sorted(uv))
         tmp = []
         for star in uv:
-            tmp.append(bisect_left(sorted_uv[-1], star))
-        uv_start_ranks.append([e for e in tmp])
+            tmp.append(bisect_left(sorted_uv[-1], star)) # uv [1, 3, 4, 1, 1] sorted [1, 1, 1, 3, 4]
+        uv_start_ranks.append([e for e in tmp]) # [[],[],[]]
 
     ans = 0
     checked = []
     for rank in uv_start_ranks:
-        if rank not in checked:
+        if rank not in checked: # rank = list
             rank_cnt = uv_start_ranks.count(rank)
             if rank_cnt > 1:
                 ans += int((rank_cnt ** 2 - rank_cnt) * 0.5)
