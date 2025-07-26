@@ -25,6 +25,19 @@ def solution():
         days = int(input().strip())
         expectation = list(map(int, input().split()))
 
-        sys.stdout.write(f"{calculate_max(0, expectation, 0, 0)}\n")
+        amount = 0
+        holdings = 0
+        max_value = 0
+        for d in range(days-1, -1, -1):
+            if expectation[d] > max_value:
+                if holdings > 0:
+                    amount += (max_value * holdings)
+                    holdings = 0
+                max_value = expectation[d]
+            else:
+                holdings += 1
+                amount -= expectation[d]
+
+        sys.stdout.write(f"{amount + (max_value * holdings)}\n")
 
 solution()
