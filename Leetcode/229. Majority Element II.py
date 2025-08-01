@@ -6,11 +6,12 @@ class Solution:
         criteria = size//3
 
         cnt_arr = {}
+        ans = []
         for n in nums:
             cnt = cnt_arr.get(n, 0) + 1
             cnt_arr.update({n:cnt})
-
-        ans = [n for n, c in cnt_arr.items() if c > criteria]
+            if cnt > criteria:
+                ans.append(n)
 
         return ans
 
