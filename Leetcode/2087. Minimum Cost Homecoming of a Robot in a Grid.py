@@ -1,8 +1,5 @@
 from typing import List
 
-from selenium.webdriver.common.devtools.v118.page import CrossOriginIsolatedContextType
-
-
 class Solution:
     def minCost(self, startPos: List[int], homePos: List[int], rowCosts: List[int], colCosts: List[int]) -> int:
         dist_r = homePos[0] - startPos[0]
