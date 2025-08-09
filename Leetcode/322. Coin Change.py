@@ -1,21 +1,19 @@
 import sys
 from typing import List
 
-
 class Solution:
     def coinChange(self, coins: List[int], amount: int) -> int:
 
-        if amount == 0:
-            return 0
-
-        if min(coins) > amount:
+        if min(coins) > amount: # 합보다 작은 동전이 없으면 -1
             return -1
 
-        counts = [sys.maxsize] * (amount+1)
-        counts[0] = 0
-        for c in coins:
+        # 1 ~ amount 까지의 각 서브 합을 구할 수 있는 동전 최소 개수를 저장(dp)
+        coins.sort()                        # 작은 동전부터 탐색하기 위해 정렬
+        counts = [sys.maxsize] * (amount+1) # 각 합을 구하는 동전 개수를 최대값으로 초기화
+        counts[0] = 0                       # 합이 0인 경우는 필요한 동전 개수도 0
+        for c in coins:                     # 금액이 작은 동전부터 시작하여 각각의 서브 합을 구할 수 있는 최소 동전 수를 갱신함.
             if c <= amount:
-                counts[c] = 1
+                counts[c] = 1               # 갱신의 시작점은 현재 사용하는 동전의 금액임.
                 for i in range(c+1, amount+1):
                     if (counts[i - c] + counts[c]) < counts[i]:
                         counts[i] = counts[i - c] + counts[c]
