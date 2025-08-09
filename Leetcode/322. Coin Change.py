@@ -15,8 +15,7 @@ class Solution:
             if c <= amount:
                 counts[c] = 1               # 갱신의 시작점은 현재 사용하는 동전의 금액임.
                 for i in range(c+1, amount+1):
-                    if (counts[i - c] + counts[c]) < counts[i]:
-                        counts[i] = counts[i - c] + counts[c]
+                    counts[i] = min((counts[i - c] + counts[c]), counts[i])
 
         return counts[amount] if counts[amount] < sys.maxsize else -1
 
