@@ -47,7 +47,8 @@ def solution():
         K = int(input())
 
         if K == 1:
-            sys.stdout.write(f"1 1")
+            sys.stdout.write(f"1 1\n")
+            continue
 
         min_l = len(W) + 1
         max_l = 0
