@@ -69,7 +69,7 @@ def solution():
                     min_l = min(min_l, curr_l)
                     max_l = max(max_l, curr_l)
 
-        if min == len(W) + 1 or max_l == 0:
+        if min_l == len(W) + 1 or max_l == 0:
             sys.stdout.write("-1\n")
         else:
             sys.stdout.write(f"{min_l} {max_l}\n")
