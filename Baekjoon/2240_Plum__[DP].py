@@ -3,7 +3,7 @@ import sys
 input = sys.stdin.readline
 
 def solution():
-    T, W = map(int, input().split())
+    T, W, H = map(int, input().split())
     plums = [int(input()) for _ in range(T)]
 
     dp = [[0] * (W+1) for _ in range(T+1)]
