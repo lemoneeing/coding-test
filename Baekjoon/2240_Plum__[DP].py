@@ -19,11 +19,11 @@ def solution():
                     if p == 1: # 자두 겟
                         dp[t][w] = max(dp[t-1][w-1], dp[t-1][w]) + 1
                     else: # 자두 놓침
-                        dp[t][w] = max(dp[t - 1][w - 1], dp[t - 1][w])
+                        dp[t][w] = dp[t - 1][w]
 
                 if w % 2 == 1: # 나무 2
                     if p == 1: # 자두 놓침
-                        dp[t][w] = max(dp[t-1][w-1], dp[t-1][w])
+                        dp[t][w] = dp[t-1][w]
                     else: # 자두 겟
                         dp[t][w] = max(dp[t - 1][w - 1], dp[t - 1][w]) + 1
 
