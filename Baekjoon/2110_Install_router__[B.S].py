@@ -68,41 +68,75 @@ input = sys.stdin.readline
 # print(result)
 #
 
-# 순열, 백트래킹
+# 순열, 백트래킹 -> 시간초과
+# sys.setrecursionlimit(1000000)
+# def solution():
+#
+#     N, C = map(int, input().split())
+#     houses = []
+#     for _ in range(N):
+#         houses.append(int(input()))
+#     houses.sort()
+#
+#     max_adj = 0
+#     adj = houses[-1] - houses[0]
+#     def pick_houses(pick, h):
+#         nonlocal N, C, houses, max_adj
+#
+#         # 최단 인접 거리 구하기
+#         if len(pick) == C:
+#             adj = sys.maxsize
+#             for i in range(C - 1):
+#                 dist = pick[i + 1] - pick[i]
+#                 adj = min(adj, dist)
+#             return adj
+#
+#         # C 만큼의 집 고르기
+#         if h < N:
+#             if houses[h] not in pick:
+#                 pick.append(houses[h])
+#                 max_adj = max(max_adj, pick_houses(pick, h + 1))
+#                 pick.remove(houses[h])
+#
+#             max_adj = max(max_adj, pick_houses(pick, h + 1))
+#
+#         return max_adj
+#
+#     sys.stdout.write(f"{pick_houses([], 0)}")
+#
+# solution()
 
-sys.setrecursionlimit(1000000)
+# 이분 탐색
 def solution():
-
     N, C = map(int, input().split())
-    houses = []
-    for _ in range(N):
-        houses.append(int(input()))
+    houses = [int(input()) for _ in range(N)]
     houses.sort()
 
-    max_adj = 0
-    adj = houses[-1] - houses[0]
-    def pick_houses(pick, h):
-        nonlocal N, C, houses, max_adj
+    long = 0
+    shortest = 1  # 인접 거리 중 최단
+    longest = houses[-1] - houses[0]  # 인접 거리 중 최장
 
-        # 최단 인접 거리 구하기
-        if len(pick) == C:
-            adj = sys.maxsize
-            for i in range(C - 1):
-                dist = pick[i + 1] - pick[i]
-                adj = min(adj, dist)
-            return adj
+    # 인접 거리가 될 수 있는 길이 내에서 탐색
+    while shortest <= longest:
+        mid = (shortest + longest) // 2
+        curr = houses[0]
+        installed = 1
 
-        # C 만큼의 집 고르기
-        if h < N:
-            if houses[h] not in pick:
-                pick.append(houses[h])
-                max_adj = max(max_adj, pick_houses(pick, h + 1))
-                pick.remove(houses[h])
+        for h in houses[1:]:
+            # mid 만큼 띄워 설치할 수 있는 집의 수 카운트
+            if curr + mid <= h:
+                installed += 1
+                curr = h
 
-            max_adj = max(max_adj, pick_houses(pick, h + 1))
+        # 목표 설치 개수 미달 -> 임의의 최단 인접 거리 감소
+        if installed < C:
+            longest = mid - 1
 
-        return max_adj
+        # 목표 설치 개수 초과 -> 임의의 최단 인접 거리 증가
+        if installed >= C:
+            shortest = mid + 1
+            long = max(long, mid)  # 목표 설치 개수를 달성하긴 했으므로 최장 거리 갱신
 
-    sys.stdout.write(f"{pick_houses([], 0)}")
+    sys.stdout.write(f"{long}")
 
 solution()
