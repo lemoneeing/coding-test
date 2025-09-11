@@ -8,12 +8,12 @@ def add_morning_belief(SIZE, B):
             B[r][c] += 1
 
 
-def set_noon_group(SIZE, F, B):
-    # 점심: 동일 음식끼리 그룹 형성, 대표 선정 (BFS)
+def set_noon_group(SIZE, F, B, FG):
+    # 점심: 동일 음식끼리 그룹 형성, 대표 선정
     G = [[] for _ in range(SIZE+1)] # 각 그룹에 속하는 학생 좌표 저장
     dir = [(-1, 0), (1, 0), (0, -1), (0, 1)]
     
-    # 그룹 형성
+    # 그룹 형성 (BFS)
     gid = 1
     visited = [[False] * SIZE for _ in range(SIZE)]
     for r in range(SIZE):
@@ -22,6 +22,7 @@ def set_noon_group(SIZE, F, B):
             if not visited[r][c]: # 그룹 미형성 구간만 탐색
                 q = [(r, c)]
                 visited[r][c] = True
+                FG[curr_f].append(gid)
                 G[gid].append((r, c))
                 while q:
                     cr, cc = q.pop(0)
@@ -63,25 +64,26 @@ def set_noon_group(SIZE, F, B):
                 B[ggr][ggc] -= 1
 
     return G, H
+
+def spread_foot_at_dinner(SIZE, F, B, FG, G, H):
+    # 민트 - 초코 - 우유 - 초코우유 - 민트우유 - 민트초코 - 민트초코우유 순으로 탐색
+    for food_type, groups in FG:
+        # 같은 움식 그룹 내에선 대표자 신앙심 - 행 작은 것 - 열 작은 것 순으로 탐색 => 점심 때 그룹 형성하면서 결정
+
+
+
 def solution():
     N, T = map(int, input().strip().split())
     F = [list(input().strip()) for _ in range(N)]
     B = [list(map(int, input().split())) for _ in range(N)]
+    FG = {'T':[], 'C':[], 'M':[], 'CM':[], 'TM': [], 'TC':[], 'TCM':[]}
 
-    G, H = set_noon_group(N, F, B)
+    G, H = set_noon_group(N, F, B, FG)
     print(G)
     print(H)
     print(B)
+    print(FG)
 
 
-
-    '''
-    
-    
-    
-    점심
-    
-    저녁
-    '''
 
 solution()
