@@ -1,34 +1,65 @@
 import sys
+from copy import deepcopy
+
 input = sys.stdin.readline
 
 observ_dirs = [(-1, 0), (0, 1), (1, 0), (0, -1)]  # 감시 방향: 상 우 하 좌
 cctv_dirs = [
-    [1],        # 1번 CCTV
-    [1, 3],     # 2번 CCTV
-    [0, 1],     # 3번 CCTV
-    [0, 1, 3],  # 4번 CCTV
-    [0, 1, 2]   # 5번 CCTV
+    [[0], [1], [2], [3]],  # 1번 CCTV 감시 방향 목록
+    [(0, 2), (1, 3)],  # 2번 CCTV
+    [(0, 1), (1, 2), (2, 3), (3, 0)],  # 3번 CCTV
+    [(0, 1, 3), (1, 2, 0), (2, 3, 1), (3, 0, 2)],  # 4번 CCTV
+    [(0, 1, 2, 3)]  # 5번 CCTV
 ]
+min_blind_spots = 65
+def count_blind_spot(office):
+    blind_spot = 0
+    for row in office:
+        blind_spot += row.count(0)
 
-rot_dirs_idx = [1, 2, 3, 0]
-# l_rot_dirs_idx = [3, 0, 2, 2]
+    return blind_spot
 
-def rotate_cctv(cctv_r, cctv_c, board):
-    
-    obs_space = 0
-    cctv_type = board[cctv_r][cctv_c]
 
-    for curr_dir_type in cctv_dirs[cctv_type-1]:
-        next_dir_type = curr_dir_type % 4 + 1
-        obs_r, obs_c = observ_dirs[next_dir_type] 
-        
-        board[cctv_r + obs_r][cctv_c+obs_c] = '#' 
-        obs_space += 1
+def check_observe_spot(cctv_r, cctv_c, dir_types, office):
+    obsv_space = 0
 
-    return obs_space
+    for dir_idx in dir_types:
+        n_r = cctv_r + observ_dirs[dir_idx][0]
+        n_c = cctv_c + observ_dirs[dir_idx][1]
+
+        while 0 <= n_r < len(office) and 0 <= n_c < len(office[0]):
+            if office[n_r][n_c] == 6:
+                break
+            elif office[n_r][n_c] == 0: # 완전히 빈 칸일 때에만 카운팅
+                office[n_r][n_c] = '#'
+                obsv_space += 1
+
+            n_r += observ_dirs[dir_idx][0]
+            n_c += observ_dirs[dir_idx][1]
+
+    return obsv_space
+
+
+def rotate_cctv(cctvs, depth, office):
+    global min_blind_spots
+
+    if depth == len(cctvs):
+        min_blind_spots = min(count_blind_spot(office), min_blind_spots)
+        return
+
+    cctv_r, cctv_c = cctvs[depth]
+    cctv_type = office[cctv_r][cctv_c]
+    for dir_types in cctv_dirs[cctv_type - 1]:
+        office_map = deepcopy(office)
+        check_observe_spot(cctv_r, cctv_c, dir_types, office_map)
+
+        rotate_cctv(cctvs, depth + 1, office_map)
+
 
 
 def solution():
+    global min_blind_spots
+
     N, M = list(map(int, input().split()))
     office = []
     cctv_pos = []
@@ -36,20 +67,14 @@ def solution():
         ofc_row = list(map(int, input().split()))
         for c, v in enumerate(ofc_row):
             if 0 < v < 6:
-                cctv_pos.append((r, c))
+                cctv_pos.append([r, c])
         office.append(ofc_row)
 
-    blind_spot = N * M
+    min_blind_spots = N * M
 
     # 백트래킹
-    for cctv in cctv_pos:
-        for i in range(4):
-            blind_spot -= rotate_cctv(cctv[0], cctv[1], office)
-    
+    rotate_cctv(cctv_pos, 0, office)
 
-
-
-
-
+    print(min_blind_spots)
 
 solution()
