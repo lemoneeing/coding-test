@@ -30,7 +30,6 @@ def hit(eggs, att_i, broken):
             if eggs[dfn_i][0] <= 0:
                 broken += 1
 
-            broken_cnt = max(broken_cnt, broken)
 
             # 다음 격파 계란 이동
             hit(eggs, att_i + 1, broken)
