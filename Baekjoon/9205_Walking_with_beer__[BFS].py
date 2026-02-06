@@ -86,11 +86,9 @@ def solve():
                     player_q.append([sr, sc])
                     visited[i] = True
 
-
         if to_be_happy:
             print("happy")
         else:
             print("sad")
-
 
 solve()       
