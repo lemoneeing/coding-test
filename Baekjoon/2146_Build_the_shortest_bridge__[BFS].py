@@ -37,7 +37,6 @@ def solution():
     # 가장 짧은 다리 찾기 (bfs)
     shortest_dist = sys.maxsize
     
-    
     for pr, pc in ports:
         visited = [[False]*N for _ in range(N)]
         visited[pr][pc] = True
