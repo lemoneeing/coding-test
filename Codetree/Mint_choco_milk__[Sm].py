@@ -1,4 +1,5 @@
 import sys
+from collections import deque
 input = sys.stdin.readline
 
 DIR = [(-1, 0), (1, 0), (0, -1), (0, 1)]
@@ -23,15 +24,12 @@ def set_noon_group(SIZE, F, B):
     for r in range(SIZE):
         for c in range(SIZE):
             if not visited[r][c]: # 그룹 미형성 구간만 탐색
-                # curr_f = F[r][c]
                 visited[r][c] = True
-                q = [(r, c)]
-                visited[r][c] = True
-                # FG[gid] = curr_f
+                q = deque([(r, c)])
                 FG[gid] = F[r][c]
                 G[gid].append((r, c))
                 while q:
-                    cr, cc = q.pop(0)
+                    cr, cc = q.popleft()
                     for dr, dc in DIR:
                         mr = cr + dr
                         mc = cc + dc
@@ -41,18 +39,14 @@ def set_noon_group(SIZE, F, B):
                             visited[mr][mc] = True
                 gid += 1
 
-    # 대표 선정
-    # H = {'T':None, 'C':None, 'M':None, 'CM':None, 'MT': None, 'CT':None, 'CMT':None} # 각 그룹 별 대표
-    # H = {'T':[], 'C':[], 'M':[], 'CM':[], 'MT': [], 'CT':[], 'CMT':[]} # 각 그룹 별 대표
+    # 대표 
     H = [[] for _ in range(gid)]
     for g in range(gid):
-    # for cf, pos_li in G.items():
         max_b = 0
         min_r = SIZE
         min_c = SIZE
 
         # 인덱스 g 에 해당하는 음식 별 그룹을 탐색
-        # for gr, gc in pos_li:
         for gr, gc in G[g]:
             if max_b < B[gr][gc]:
                 max_b = B[gr][gc]
